@@ -6,7 +6,6 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .permission import IsRoomAdmin
 
 class ALLRoomAPI(ListCreateAPIView):
     permission_classes=[IsAuthenticated]
@@ -32,9 +31,10 @@ class DetailRoomAPI(RetrieveUpdateDestroyAPIView):
         if self.request.method=='GET':
             return Room.objects.all()
         profile_data=get_object_or_404(Profile, user=self.request.user)
-        return Room.objects.filter(user=profile_data)
+        return Room.objects.filter(created_by=profile_data)
 
 class RoomMemberListAPI(APIView):
+    permission_classes=[IsAuthenticated]
     def get(self, request, pk):
         room_data=get_object_or_404(Room, id=pk)
         data=RoomMember.objects.filter(room=room_data)
@@ -42,9 +42,14 @@ class RoomMemberListAPI(APIView):
         return Response(serial.data, status=200)
 
     def post(self, request, pk):
+        room_data = get_object_or_404(Room, id=pk)
+        if RoomMember.objects.filter(room=room_data).count() >= 2:
+            return Response({"error": "Room is full. Maximum 2 members allowed."},status=400)
+        
         serial=RoomMemberSerializer(data=request.data)
         if serial.is_valid():
-            serial.save(user=request.user)
+            profile_data=get_object_or_404(Profile, user=request.user)
+            serial.save(user=profile_data)
             return Response(serial.data, status=201)
         return Response(serial.errors, status=400)   
             

@@ -6,6 +6,7 @@ from .serializers import RegisterSerializer, ProfileGetSerializer
 from django.db.models import Q
 from rest_framework.response import Response
 from .models import Profile
+from rest_framework.permissions import IsAuthenticated
 
 class RegisterAPI(APIView):
     def post(self, request):
@@ -25,6 +26,7 @@ class RegisterAPI(APIView):
         return Response(serial.errors, status=400)
 
 class MyProfileAPI(RetrieveAPIView):
+    permission_classes=[IsAuthenticated]
     serializer_class=ProfileGetSerializer
 
     def get_object(self):
