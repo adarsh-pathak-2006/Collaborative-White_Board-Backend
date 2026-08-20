@@ -49,7 +49,7 @@ class RoomMemberListAPI(APIView):
         serial=RoomMemberSerializer(data=request.data)
         if serial.is_valid():
             profile_data=get_object_or_404(Profile, user=request.user)
-            serial.save(user=profile_data)
+            serial.save(user=profile_data, room=room_data)
             return Response(serial.data, status=201)
         return Response(serial.errors, status=400)   
             

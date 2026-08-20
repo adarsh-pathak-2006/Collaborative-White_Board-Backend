@@ -21,7 +21,6 @@ class RoomMemberGetSerializer(ModelSerializer):
         fields='__all__'
 
 class RoomMemberSerializer(ModelSerializer):
-    room=PrimaryKeyRelatedField(queryset=Room.objects.all())
     class Meta:
         model=RoomMember
         fields=['room', 'user']
