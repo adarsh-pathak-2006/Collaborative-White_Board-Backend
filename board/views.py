@@ -14,6 +14,11 @@ class ALLRoomAPI(ListCreateAPIView):
         return RoomSerializer
     queryset=Room.objects.all()
 
+    def perform_create(self, serializer):
+        profile_data=get_object_or_404(Profile, user=self.request.user)
+        room_data=serializer.save(created_by=profile_data)
+        RoomMember.objects.create(room=room_data, user=profile_data, is_admin=True)
+
 class DetailRoomAPI(RetrieveUpdateDestroyAPIView):
     permission_classes=[IsAuthenticated]
     def get_serializer_class(self):
