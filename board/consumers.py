@@ -30,12 +30,29 @@ class DrawingBoardConsumer(AsyncWebsocketConsumer):
         board_data=json.loads(text_data)
         x_position=board_data.get("x_position")
         y_position=board_data.get("y_position")
+        color=board_data.get("color", "#ffffff")
+        size=board_data.get("size", 2)
+        event_type=board_data.get("event_type", "draw")
 
-        await self.channel_layer.group_send(self.group_name, {"type":"positions", "x_position":x_position, "y_position":y_position})
+        await self.channel_layer.group_send(self.group_name, {
+            "type": "positions", 
+            "x_position": x_position, 
+            "y_position": y_position,
+            "color": color,
+            "size": size,
+            "event_type": event_type
+        })
 
     async def positions(self, event):
-        await self.send(text_data=json.dumps({"x_position":event["x_position"], "y_position":event["y_position"]}))
-        Logging.delay(x=event['x_position'], y=event['y_position'], user_id=self.user.id, room_id=self.room_id)
+        await self.send(text_data=json.dumps({
+            "x_position": event.get("x_position"), 
+            "y_position": event.get("y_position"),
+            "color": event.get("color"),
+            "size": event.get("size"),
+            "event_type": event.get("event_type")
+        }))
+        if event.get("event_type") == "draw" and event.get("x_position") is not None and event.get("y_position") is not None:
+            Logging.delay(x=event['x_position'], y=event['y_position'], user_id=self.user.id, room_id=self.room_id)
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
