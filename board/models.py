@@ -2,6 +2,7 @@ from django.db import models
 from authentication.models import Profile
 
 class Room(models.Model):
+    created_by=models.ForeignKey(Profile, on_delete=models.CASCADE)
     name=models.CharField(max_length=150)
     created_at=models.DateTimeField(auto_now_add=True)
 
@@ -11,6 +12,7 @@ class Room(models.Model):
 class RoomMember(models.Model):
     room=models.ForeignKey(Room, on_delete=models.CASCADE)
     user=models.ForeignKey(Profile, on_delete=models.CASCADE)
+    is_admin=models.BooleanField(default=False)
     added_on=models.DateTimeField(auto_now_add=True)
 
     class Meta:

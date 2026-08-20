@@ -3,6 +3,7 @@ from authentication.serializers import ProfileGetSerializer
 from .models import RoomMember, Room
 
 class RoomGetSerializer(ModelSerializer):
+    created_by=ProfileGetSerializer(read_only=True)
     class Meta:
         model=Room
         fields='__all__'
@@ -23,5 +24,5 @@ class RoomMemberSerializer(ModelSerializer):
     room=PrimaryKeyRelatedField(queryset=Room.objects.all())
     class Meta:
         model=RoomMember
-        fields=['room', 'user']
+        fields=['room', 'user', 'is_admin']
         read_only_fields=['user']
