@@ -20,3 +20,13 @@ class RoomMember(models.Model):
 
     def __str__(self):
         return f"{self.user.name} in room {self.room.name}"
+
+class DrawLog(models.Model):
+    user=models.ForeignKey(Profile, on_delete=models.CASCADE)
+    room=models.ForeignKey(Room, on_delete=models.CASCADE)
+    x_position=models.IntegerField()
+    y_position=models.IntegerField()
+    added_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.name} of {self.room.name}"
