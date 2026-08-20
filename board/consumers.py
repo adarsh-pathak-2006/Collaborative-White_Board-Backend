@@ -9,8 +9,13 @@ class DrawingBoardConsumer(AsyncWebsocketConsumer):
         self.user=self.scope['user']
         if self.user.is_authenticated:
             self.room_id=self.scope['url_route']['kwargs']['rid']
-            room_data=await Room.objects.aget(id=self.room_id)
-            profile_data=await Profile.objects.aget(user=self.user)
+            try:
+                room_data=await Room.objects.aget(id=self.room_id)
+                profile_data=await Profile.objects.aget(user=self.user)
+            except (Room.DoesNotExist, Profile.DoesNotExist):
+                await self.close()
+                return
+            
             if await RoomMember.objects.filter(room=room_data, user=profile_data).aexists():
                 await self.accept()
                 self.group_name=f"user_of_{self.room_id}"

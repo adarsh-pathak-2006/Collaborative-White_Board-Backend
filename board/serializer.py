@@ -24,4 +24,4 @@ class RoomMemberSerializer(ModelSerializer):
     class Meta:
         model=RoomMember
         fields=['room', 'user']
-        read_only_fields=['user']
+        read_only_fields=['user', 'room']
