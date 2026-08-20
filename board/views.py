@@ -6,6 +6,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from .permission import IsRoomAdmin
 
 class ALLRoomAPI(ListCreateAPIView):
     permission_classes=[IsAuthenticated]
@@ -45,4 +46,5 @@ class RoomMemberListAPI(APIView):
         if serial.is_valid():
             serial.save(user=request.user)
             return Response(serial.data, status=201)
-        return Response(serial.errors, status=400)
+        return Response(serial.errors, status=400)   
+            
