@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer
 from authentication.serializers import ProfileGetSerializer
 from .models import RoomMember, Room
 
