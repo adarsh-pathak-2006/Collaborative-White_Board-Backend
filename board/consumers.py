@@ -4,7 +4,7 @@ from .models import RoomMember, Room
 from authentication.models import Profile
 from board.tasks import Logging
 
-class DrawingBoard(AsyncWebsocketConsumer):
+class DrawingBoardConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user=self.scope['user']
         if self.user.is_authenticated:
