@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
-from .serializers import RegisterSerializer, UserGetSerializer, ProfileGetSerializer
+from .serializers import RegisterSerializer, ProfileGetSerializer
 from django.db.models import Q
 from rest_framework.response import Response
 from .models import Profile

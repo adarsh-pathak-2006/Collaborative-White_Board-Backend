@@ -1,3 +1,20 @@
 from django.db import models
+from authentication.models import Profile
 
-# Create your models here.
+class Room(models.Model):
+    name=models.CharField(max_length=150)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+class RoomMember(models.Model):
+    room=models.ForeignKey(Room, on_delete=models.CASCADE)
+    user=models.ForeignKey(Profile, on_delete=models.CASCADE)
+    added_on=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints=[models.UniqueConstraint(fields=['room', 'user'], name='unique_user_per_room')]
+
+    def __str__(self):
+        return f"{self.user.name} in room {self.room.name}"
