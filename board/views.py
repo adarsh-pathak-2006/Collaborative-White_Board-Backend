@@ -5,6 +5,7 @@ from authentication.models import Profile
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 class ALLRoomAPI(ListCreateAPIView):
     permission_classes=[IsAuthenticated]
@@ -32,3 +33,16 @@ class DetailRoomAPI(RetrieveUpdateDestroyAPIView):
         profile_data=get_object_or_404(Profile, user=self.request.user)
         return Room.objects.filter(user=profile_data)
 
+class RoomMemberListAPI(APIView):
+    def get(self, request, pk):
+        room_data=get_object_or_404(Room, id=pk)
+        data=RoomMember.objects.filter(room=room_data)
+        serial=RoomMemberGetSerializer(data, many=True)
+        return Response(serial.data, status=200)
+
+    def post(self, request, pk):
+        serial=RoomMemberSerializer(data=request.data)
+        if serial.is_valid():
+            serial.save(user=request.user)
+            return Response(serial.data, status=201)
+        return Response(serial.errors, status=400)
