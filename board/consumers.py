@@ -29,8 +29,8 @@ class DrawingBoard(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(self.group_name, {"type":"positions", "x_position":x_position, "y_position":y_position})
 
     async def positions(self, event):
-        await self.send(text_data=json.dumps({"x_position":event["x_position"], "y_position":["y_position"]}))
-        await Logging.delay(x=event['x_position'], y=event['y_position'], user=self.user, room_id=self.room_id)
+        await self.send(text_data=json.dumps({"x_position":event["x_position"], "y_position":event["y_position"]}))
+        Logging.delay(x=event['x_position'], y=event['y_position'], user_id=self.user.id, room_id=self.room_id)
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
